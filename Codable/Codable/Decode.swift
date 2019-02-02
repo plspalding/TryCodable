@@ -27,6 +27,20 @@ import Foundation
 
 extension String: Error { }
 
+prefix operator ^
+
+prefix func ^<A, B>(_ keyPath: KeyPath<A, B>) -> (A) -> B {
+    return { a in
+        a[keyPath: keyPath]
+    }
+}
+
+func id<A>(_ value: A) -> A {
+    return value
+}
+
+struct AnyCodable: Codable {}
+
 enum Decode<T: Decodable, K: CodingKey> {
     case Successful(T)
     case Failure(Error)
@@ -43,6 +57,7 @@ enum Decode<T: Decodable, K: CodingKey> {
         function: String = #function,
         line: Int = #line)
         throws -> T {
+            // TODO: Use file, function and line to create a lovely error
             switch self {
             case .Successful(let value): return value
             case .Failure(let error): throw error
@@ -64,6 +79,45 @@ enum Decode<T: Decodable, K: CodingKey> {
     }
 }
 
+enum DecodeArray<T> {
+    case Successful([T])
+    case Failure(Error)
+    
+    init(f: ([T].Type) throws -> [T]) {
+        do {
+            self = .Successful(try f([T].self))
+        } catch {
+            self = .Failure(error)
+        }
+    }
+    
+    func valueOrThrow(
+        file: String = #file,
+        function: String = #function,
+        line: Int = #line)
+        throws -> [T] {
+            switch self {
+            case .Successful(let value): return value
+            case .Failure(let error): throw error
+            }
+    }
+    
+    func valueOrNil() -> [T]? {
+        switch self {
+        case .Successful(let value): return value
+        case .Failure(_): return nil
+        }
+    }
+    
+    func valueElse(_ defaultValue: @autoclosure () -> [T]) -> [T] {
+        switch self {
+        case .Successful(let value): return value
+        case .Failure(_): return defaultValue()
+        }
+    }
+}
+
+
 extension KeyedDecodingContainer {
     
     func decode<T: Decodable>(_ key: Key) -> Decode<T, Key> {
@@ -82,7 +136,40 @@ extension KeyedDecodingContainer {
             }
         }, key: key)
     }
+    
+    func decode<T: Decodable, U>(_ key: Key, map: KeyPath<T, U>) -> Decode<U, Key> {
+        return decode(key, map: ^map)
+    }
+    
+    func decodeAny<T: Decodable>(_ type: T.Type, _ key: Key) -> DecodeArray<T> {
+        return DecodeArray(f: { (a) throws -> [T] in
+            
+            var unkeyedContainer = try nestedUnkeyedContainer(forKey: key)
+            return unkeyedContainer._decodeAny(type)
+        })
+    }
 }
+
+extension UnkeyedDecodingContainer {
+    mutating func _decodeAny<T: Decodable>(_ type: T.Type) -> [T] {
+        var array: [T?] = []
+        while !isAtEnd {
+            do {
+                array.append(try decode(T.self))
+            } catch {
+                try! decode(AnyCodable.self)
+            }
+        }
+        return array.compactMap(id)
+    }
+    
+    mutating func decodeAny<T: Decodable>(_ type: T.Type) -> DecodeArray<T> {
+        return DecodeArray(f: { (a) throws -> [T] in
+            return _decodeAny(type)
+        })
+    }
+}
+
 
 struct Person {
     let name: String
