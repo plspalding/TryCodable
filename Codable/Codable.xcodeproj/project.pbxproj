@@ -11,6 +11,10 @@
 		5A107E552203B180006D969A /* CodableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A107E542203B180006D969A /* CodableTests.swift */; };
 		5A107E572203B180006D969A /* Codable.h in Headers */ = {isa = PBXBuildFile; fileRef = 5A107E492203B180006D969A /* Codable.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5A107E612203B18C006D969A /* Decode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A107E602203B18C006D969A /* Decode.swift */; };
+		5A7A2A01220757380027C61F /* DecodableError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A7A2A00220757380027C61F /* DecodableError.swift */; };
+		5A7A2A032207575B0027C61F /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A7A2A022207575B0027C61F /* Helpers.swift */; };
+		5A7A2A05220757B90027C61F /* KeyedDecodingContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A7A2A04220757B90027C61F /* KeyedDecodingContainer.swift */; };
+		5A7A2A07220758270027C61F /* UnkeyedDecodingContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A7A2A06220758270027C61F /* UnkeyedDecodingContainer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -31,6 +35,10 @@
 		5A107E542203B180006D969A /* CodableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodableTests.swift; sourceTree = "<group>"; };
 		5A107E562203B180006D969A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5A107E602203B18C006D969A /* Decode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Decode.swift; sourceTree = "<group>"; };
+		5A7A2A00220757380027C61F /* DecodableError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecodableError.swift; sourceTree = "<group>"; };
+		5A7A2A022207575B0027C61F /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
+		5A7A2A04220757B90027C61F /* KeyedDecodingContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyedDecodingContainer.swift; sourceTree = "<group>"; };
+		5A7A2A06220758270027C61F /* UnkeyedDecodingContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnkeyedDecodingContainer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,6 +83,10 @@
 			children = (
 				5A107E492203B180006D969A /* Codable.h */,
 				5A107E602203B18C006D969A /* Decode.swift */,
+				5A7A2A04220757B90027C61F /* KeyedDecodingContainer.swift */,
+				5A7A2A06220758270027C61F /* UnkeyedDecodingContainer.swift */,
+				5A7A2A00220757380027C61F /* DecodableError.swift */,
+				5A7A2A022207575B0027C61F /* Helpers.swift */,
 				5A107E4A2203B180006D969A /* Info.plist */,
 			);
 			path = Codable;
@@ -198,6 +210,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5A7A2A01220757380027C61F /* DecodableError.swift in Sources */,
+				5A7A2A05220757B90027C61F /* KeyedDecodingContainer.swift in Sources */,
+				5A7A2A07220758270027C61F /* UnkeyedDecodingContainer.swift in Sources */,
+				5A7A2A032207575B0027C61F /* Helpers.swift in Sources */,
 				5A107E612203B18C006D969A /* Decode.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

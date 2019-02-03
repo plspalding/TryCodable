@@ -25,30 +25,14 @@
 
 import Foundation
 
-prefix operator ^
-
-prefix func ^<A, B>(_ keyPath: KeyPath<A, B>) -> (A) -> B {
-    return { a in
-        a[keyPath: keyPath]
-    }
-}
-
-func id<A>(_ value: A) -> A {
-    return value
-}
-
-struct AnyCodable: Codable {}
-
-extension String: Error { }
-
 enum Decode<T> {
-    case Successful(T)
-    case Failure(Error)
+    case successful(T)
+    case failure(Error)
     init(f: () throws -> T) {
         do {
-            self = .Successful(try f())
+            self = .successful(try f())
         } catch {
-            self = .Failure(error)
+            self = .failure(error)
         }
     }
     
@@ -59,80 +43,40 @@ enum Decode<T> {
         throws -> T
     {
         switch self {
-        case .Successful(let value): return value
-        case .Failure(let error): throw error
+        case .successful(let value): return value
+        case .failure(let error): throw error
         }
     }
     
     func valueOrNil() -> T? {
         switch self {
-        case .Successful(let value): return value
-        case .Failure: return nil
+        case .successful(let value): return value
+        case .failure: return nil
         }
     }
     
     func valueElse(_ defaultValue: @autoclosure () -> T) -> T {
         switch self {
-        case .Successful(let value): return value
-        case .Failure: return defaultValue()
-        }
-    }
-}
-
-extension KeyedDecodingContainer {
-    
-    func decode<T: Decodable>(_ key: Key) -> Decode<T> {
-        return Decode {try decode(T.self, forKey: key) }
-    }
-    
-    func decode<T: Decodable, U>(_ key: Key, map: (T) -> U?) -> Decode<U> {
-        return Decode {
-            guard let result = map(try decode(T.self, forKey: key)) else { throw "Failed to transform data" }
-            return result
+        case .successful(let value): return value
+        case .failure: return defaultValue()
         }
     }
     
-    func decode<T: Decodable, U>(_ key: Key, map: KeyPath<T, U?>) -> Decode<U> {
-        return decode(key, map: ^map)
-    }
-    
-    func decodeAny<T: Decodable>(_ type: T.Type = T.self, _ key: Key) -> Decode<[T]> {
-        return Decode {
-            var unkeyedContainer = try nestedUnkeyedContainer(forKey: key)
-            return unkeyedContainer._decodeAny(type, map: id)
+    func map<U>(_ f: (T) -> U) -> Decode<U> {
+        switch self {
+        case .successful(let value):
+            return .successful(f(value))
+        case .failure(let error):
+            return .failure(error)
         }
     }
     
-    func decodeAny<T: Decodable, U>(_ type: T.Type = T.self, _ key: Key, map: @escaping (T) -> U?) -> Decode<[U]> {
-        return Decode {
-            var unkeyContainer = try nestedUnkeyedContainer(forKey: key)
-            return unkeyContainer._decodeAny(type, map: map)
-        }
-    }
-}
-
-extension UnkeyedDecodingContainer {
-    mutating func _decodeAny<T: Decodable, U>(_ type: T.Type = T.self, map: (T) -> U?) -> [U] {
-        var array: [U?] = []
-        while !isAtEnd {
-            do {
-                array.append(map(try decode(T.self)))
-            } catch {
-                _ = try! decode(AnyCodable.self)
-            }
-        }
-        return array.compactMap(id)
-    }
-    
-    mutating func decodeAny<T: Decodable>(_ type: T.Type = T.self) -> Decode<[T]> {
-        return Decode {
-            return _decodeAny(type, map: id)
-        }
-    }
-    
-    mutating func decodeAny<T: Decodable, U>(_ type: T.Type = T.self, map: (T) -> U) -> Decode<[U]> {
-        return Decode {
-            return _decodeAny(type, map: map)
+    func flatMap<U>(_ f: (T) -> Decode<U>) -> Decode<U> {
+        switch self {
+        case .successful(let value):
+            return f(value)
+        case .failure(let error):
+            return .failure(error)
         }
     }
 }
