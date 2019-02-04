@@ -28,7 +28,7 @@ import Foundation
 // Standard API
 extension KeyedDecodingContainer {
     
-    func decode<T: Decodable, U>(
+    public func decode<T: Decodable, U>(
         _ key: Key,
         map: (T) -> U?)
         -> Decode<U>
@@ -39,31 +39,33 @@ extension KeyedDecodingContainer {
         }
     }
     
-    func decode<T: Decodable>(_ key: Key) -> Decode<T> {
+    public func decode<T: Decodable>(_ key: Key) -> Decode<T> {
         return decode(key, map: id)
     }
     
-    func decode<T: Decodable>(
+    public func decode<T: Decodable>(
         any type: T.Type = T.self,
-        _ key: Key)
+        _ key: Key,
+        log: Logger = .inactive)
         -> Decode<[T]> {
         do {
             var unkeyedContainer = try nestedUnkeyedContainer(forKey: key)
-            return unkeyedContainer.decode(any: type, map: id)
+            return unkeyedContainer.decode(any: type, map: id, log: log)
         } catch {
             return Decode<[T]>.failure(error)
         }
     }
     
-    func decode<T: Decodable, U>(
+    public func decode<T: Decodable, U>(
         any type: T.Type = T.self,
         _ key: Key,
-        map: @escaping (T) -> U?)
+        map: @escaping (T) -> U?,
+        log: Logger = .inactive)
         -> Decode<[U]>
     {
         do {
             var unkeyedContainer = try nestedUnkeyedContainer(forKey: key)
-            return unkeyedContainer.decode(any: type, map: map)
+            return unkeyedContainer.decode(any: type, map: map, log: log)
         } catch {
             return Decode<[U]>.failure(error)
         }
@@ -72,7 +74,7 @@ extension KeyedDecodingContainer {
 
 // KeyPath API
 extension KeyedDecodingContainer {
-    func decode<T: Decodable, U>(
+    public func decode<T: Decodable, U>(
         _ key: Key,
         map: KeyPath<T, U?>)
         -> Decode<U>

@@ -26,7 +26,7 @@
 import Foundation
 
 extension DecodingError {
-    var message: String {
+    public var message: String {
         switch self {
         case let .typeMismatch(_, context):
             return context.debugDescription

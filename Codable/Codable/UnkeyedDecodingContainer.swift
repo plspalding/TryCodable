@@ -27,7 +27,7 @@ import Foundation
 
 // Decode All
 extension UnkeyedDecodingContainer {
-    mutating func decode<T: Decodable, U>(
+    public mutating func decode<T: Decodable, U>(
         all type: T.Type,
         map: (T) -> U?)
         -> Decode<[U]>
@@ -45,14 +45,14 @@ extension UnkeyedDecodingContainer {
         return Decode.successful(array)
     }
     
-    mutating func decode<T: Decodable>(
+    public mutating func decode<T: Decodable>(
         all type: T.Type = T.self)
         -> Decode<[T]>
     {
         return decode(all: type, map: id)
     }
     
-    mutating func decode<T: Decodable, U>(
+    public mutating func decode<T: Decodable, U>(
         all type: T.Type = T.self,
         map: KeyPath<T, U?>)
         -> Decode<[U]>
@@ -63,10 +63,10 @@ extension UnkeyedDecodingContainer {
 
 // Decode Any
 extension UnkeyedDecodingContainer {
-    mutating func decode<T: Decodable, U>(
+    public mutating func decode<T: Decodable, U>(
         any type: T.Type,
         map: (T) -> U?,
-        log: ((Error) -> ())? = nil)
+        log: Logger = .inactive)
         -> Decode<[U]>
     {
         var array: [U?] = []
@@ -74,24 +74,27 @@ extension UnkeyedDecodingContainer {
             do {
                 array.append(map(try decode(T.self)))
             } catch {
-                log?(error)
+                log.perform(with: error)
                 _ = try! decode(AnyCodable.self)
             }
         }
         return Decode.successful(array.compactMap(id))
     }
     
-    mutating func decode<T: Decodable>(
-        any type: T.Type = T.self)
+    public mutating func decode<T: Decodable>(
+        any type: T.Type = T.self,
+        log: Logger = .inactive)
         -> Decode<[T]>
     {
-        return decode(any: type, map: id)
+        return decode(any: type, map: id, log: log)
     }
     
-    mutating func decode<T: Decodable, U>(
+    public mutating func decode<T: Decodable, U>(
         _ type: T.Type = T.self,
-        map: (T) -> U)
-        -> Decode<[U]> {
-        return decode(any: type, map: map)
+        map: (T) -> U,
+        log: Logger = .inactive)
+        -> Decode<[U]>
+    {
+        return decode(any: type, map: map, log: log)
     }
 }

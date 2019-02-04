@@ -25,7 +25,7 @@
 
 import Foundation
 
-enum Decode<T> {
+public enum Decode<T> {
     case successful(T)
     case failure(Error)
     init(f: () throws -> T) {
@@ -36,7 +36,7 @@ enum Decode<T> {
         }
     }
     
-    func valueOrThrow(
+    public func valueOrThrow(
         file: String = #file,
         function: String = #function,
         line: Int = #line)
@@ -48,21 +48,23 @@ enum Decode<T> {
         }
     }
     
-    func valueOrNil() -> T? {
+    public func valueOrNil() -> T? {
         switch self {
         case .successful(let value): return value
         case .failure: return nil
         }
     }
     
-    func valueElse(_ defaultValue: @autoclosure () -> T) -> T {
+    public func valueElse(_ defaultValue: @autoclosure () -> T, log: Logger = .inactive) -> T {
         switch self {
         case .successful(let value): return value
-        case .failure: return defaultValue()
+        case .failure(let error):
+            log.perform(with: error)
+            return defaultValue()
         }
     }
     
-    func map<U>(_ f: (T) -> U) -> Decode<U> {
+    public func map<U>(_ f: (T) -> U) -> Decode<U> {
         switch self {
         case .successful(let value):
             return .successful(f(value))
@@ -71,7 +73,7 @@ enum Decode<T> {
         }
     }
     
-    func flatMap<U>(_ f: (T) -> Decode<U>) -> Decode<U> {
+    public func flatMap<U>(_ f: (T) -> Decode<U>) -> Decode<U> {
         switch self {
         case .successful(let value):
             return f(value)

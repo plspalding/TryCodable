@@ -40,3 +40,18 @@ prefix func ^<A, B>(_ keyPath: KeyPath<A, B>) -> (A) -> B {
 func id<A>(_ value: A) -> A {
     return value
 }
+
+public enum Logger {
+    
+    case inactive
+    case active
+    
+    func perform(with error: Error) {
+        switch self {
+        case .inactive: break
+        case .active:
+            guard let e = error as? DecodingError else { print("Unknown error: \(error)"); return }
+            print(e.message)
+        }
+    }
+}
