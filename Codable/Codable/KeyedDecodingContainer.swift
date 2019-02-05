@@ -25,7 +25,7 @@
 
 import Foundation
 
-// Standard API
+// MARK:- Standard API
 extension KeyedDecodingContainer {
     
     public func decode<T: Decodable, U>(
@@ -34,7 +34,9 @@ extension KeyedDecodingContainer {
         -> Decode<U>
     {
         return Decode {
-            guard let result = map(try decode(T.self, forKey: key)) else { throw "Failed to transform data" }
+            guard let result = map(try decode(T.self, forKey: key)) else {
+                throw keyedTransformError(key: key, container: self, codingPath: codingPath)
+            }
             return result
         }
     }
@@ -42,12 +44,49 @@ extension KeyedDecodingContainer {
     public func decode<T: Decodable>(_ key: Key) -> Decode<T> {
         return decode(key, map: id)
     }
+}
+
+// MARK:- All API
+extension KeyedDecodingContainer {
     
     public func decode<T: Decodable>(
-        any type: T.Type = T.self,
+        all type: T.Type = T.self,
         _ key: Key,
         log: Logger = .inactive)
-        -> Decode<[T]> {
+        -> Decode<[T]>
+    {
+        do {
+            var unkeyedContainer = try nestedUnkeyedContainer(forKey: key)
+            return unkeyedContainer.decode(all: type, map: id)
+        } catch {
+            return Decode<[T]>.failure(error)
+        }
+    }
+    
+    public func decode<T: Decodable, U>(
+        all type: T.Type = T.self,
+        _ key: Key,
+        map: @escaping (T) -> U?,
+        log: Logger = .inactive)
+        -> Decode<[U]>
+    {
+        do {
+            var unkeyedContainer = try nestedUnkeyedContainer(forKey: key)
+            return unkeyedContainer.decode(all: type, map: map)
+        } catch {
+            return Decode<[U]>.failure(error)
+        }
+    }
+}
+
+// MARK:- Any API
+extension KeyedDecodingContainer {
+    public func decode<T: Decodable>(
+        any type: T.Type,
+        _ key: Key,
+        log: Logger = .inactive)
+        -> Decode<[T]>
+    {
         do {
             var unkeyedContainer = try nestedUnkeyedContainer(forKey: key)
             return unkeyedContainer.decode(any: type, map: id, log: log)
@@ -57,7 +96,7 @@ extension KeyedDecodingContainer {
     }
     
     public func decode<T: Decodable, U>(
-        any type: T.Type = T.self,
+        any type: T.Type,
         _ key: Key,
         map: @escaping (T) -> U?,
         log: Logger = .inactive)
@@ -72,7 +111,7 @@ extension KeyedDecodingContainer {
     }
 }
 
-// KeyPath API
+// MARK:- KeyPath API
 extension KeyedDecodingContainer {
     public func decode<T: Decodable, U>(
         _ key: Key,

@@ -41,17 +41,30 @@ func id<A>(_ value: A) -> A {
     return value
 }
 
+extension Optional {
+    
+    var isNil: Bool {
+        return self == nil
+    }
+    
+    var isNotNil: Bool {
+        return !isNil
+    }
+}
+
 public enum Logger {
     
     case inactive
     case active
     
-    func perform(with error: Error) {
+    func perform(with error: Error, index: Int?) {
         switch self {
         case .inactive: break
         case .active:
-            guard let e = error as? DecodingError else { print("Unknown error: \(error)"); return }
-            print(e.message)
+            let indexMessage = index.isNotNil ? " Index: \(index!)" : ""
+            
+            guard let e = error as? DecodingError else { print("Unknown error: \(error)" + indexMessage); return }
+            print(e.message + indexMessage)
         }
     }
 }

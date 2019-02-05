@@ -25,24 +25,30 @@
 
 import Foundation
 
-// Decode All
+// MARK:- Decode All
 extension UnkeyedDecodingContainer {
     public mutating func decode<T: Decodable, U>(
         all type: T.Type,
         map: (T) -> U?)
         -> Decode<[U]>
     {
-        var array: [U] = []
-        while !isAtEnd {
-            do {
-                guard let result = map(try decode(T.self))
-                    else { return Decode<[U]>.failure("Failed to transform element at index: \(index)") }
-                array.append(result)
-            } catch {
-                return Decode<[U]>.failure(error)
+        return Decode {
+            var array: [U] = []
+            while !isAtEnd {
+                do {
+                    // We need to create the transform error before running the decode function otherwise the index will be wrong
+                    let transformError = unkeyedTransformError(container: self, codingPath: codingPath, index: currentIndex)
+                    
+                    guard let result = map(try decode(T.self)) else {
+                        throw transformError
+                    }
+                    array.append(result)
+                } catch {
+                    throw error
+                }
             }
+            return array
         }
-        return Decode.successful(array)
     }
     
     public mutating func decode<T: Decodable>(
@@ -61,7 +67,7 @@ extension UnkeyedDecodingContainer {
     }
 }
 
-// Decode Any
+// MARK:- Decode Any
 extension UnkeyedDecodingContainer {
     public mutating func decode<T: Decodable, U>(
         any type: T.Type,
@@ -69,20 +75,22 @@ extension UnkeyedDecodingContainer {
         log: Logger = .inactive)
         -> Decode<[U]>
     {
-        var array: [U?] = []
-        while !isAtEnd {
-            do {
-                array.append(map(try decode(T.self)))
-            } catch {
-                log.perform(with: error)
-                _ = try! decode(AnyCodable.self)
+        return Decode {
+            var array: [U?] = []
+            while !isAtEnd {
+                do {
+                    array.append(map(try decode(T.self)))
+                } catch {
+                    log.perform(with: error, index: currentIndex)
+                    _ = try! decode(AnyCodable.self)
+                }
             }
+            return array.compactMap(id)
         }
-        return Decode.successful(array.compactMap(id))
     }
     
     public mutating func decode<T: Decodable>(
-        any type: T.Type = T.self,
+        any type: T.Type,
         log: Logger = .inactive)
         -> Decode<[T]>
     {
@@ -90,7 +98,7 @@ extension UnkeyedDecodingContainer {
     }
     
     public mutating func decode<T: Decodable, U>(
-        _ type: T.Type = T.self,
+        _ type: T.Type,
         map: (T) -> U,
         log: Logger = .inactive)
         -> Decode<[U]>

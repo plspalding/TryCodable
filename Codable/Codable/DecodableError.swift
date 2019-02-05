@@ -25,6 +25,32 @@
 
 import Foundation
 
+public struct WrappedDecodingError: Error {
+    public let decodingError: DecodingError?
+    
+    public let file: String
+    public let function: String
+    public let line: Int
+}
+
+func keyedTransformError<K: CodingKey>(
+    key: K,
+    container: KeyedDecodingContainer<K>,
+    codingPath: [CodingKey])
+    -> DecodingError
+{
+    return .dataCorruptedError(forKey: key, in: container, debugDescription: "Failed to transform data")
+}
+
+func unkeyedTransformError(
+    container: UnkeyedDecodingContainer,
+    codingPath: [CodingKey],
+    index: Int)
+    -> DecodingError
+{
+    return .dataCorruptedError(in: container, debugDescription: "Failed to transform data at position: \(index)")
+}
+
 extension DecodingError {
     public var message: String {
         switch self {

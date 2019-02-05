@@ -44,7 +44,9 @@ public enum Decode<T> {
     {
         switch self {
         case .successful(let value): return value
-        case .failure(let error): throw error
+        case .failure(let e):
+            let error = WrappedDecodingError(decodingError: e as? DecodingError, file: file, function: function, line: line)
+            throw error
         }
     }
     
@@ -59,7 +61,7 @@ public enum Decode<T> {
         switch self {
         case .successful(let value): return value
         case .failure(let error):
-            log.perform(with: error)
+            log.perform(with: error, index: nil)
             return defaultValue()
         }
     }

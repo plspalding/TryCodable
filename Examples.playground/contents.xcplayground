@@ -3,5 +3,6 @@
     <pages>
         <page name='Decode'/>
         <page name='DecodeAny'/>
+        <page name='WrappedDecodingError'/>
     </pages>
 </playground>
