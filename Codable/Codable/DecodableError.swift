@@ -35,8 +35,7 @@ public struct WrappedDecodingError: Error {
 
 func keyedTransformError<K: CodingKey>(
     key: K,
-    container: KeyedDecodingContainer<K>,
-    codingPath: [CodingKey])
+    container: KeyedDecodingContainer<K>)
     -> DecodingError
 {
     return .dataCorruptedError(forKey: key, in: container, debugDescription: "Failed to transform data")
@@ -44,11 +43,17 @@ func keyedTransformError<K: CodingKey>(
 
 func unkeyedTransformError(
     container: UnkeyedDecodingContainer,
-    codingPath: [CodingKey],
     index: Int)
     -> DecodingError
 {
     return .dataCorruptedError(in: container, debugDescription: "Failed to transform data at position: \(index)")
+}
+
+func singleTransformError(
+    container: SingleValueDecodingContainer)
+    -> DecodingError
+{
+    return .dataCorruptedError(in: container, debugDescription: "Failed to transform data")
 }
 
 extension DecodingError {

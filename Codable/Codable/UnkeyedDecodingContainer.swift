@@ -37,7 +37,7 @@ extension UnkeyedDecodingContainer {
             while !isAtEnd {
                 do {
                     // We need to create the transform error before running the decode function otherwise the index will be wrong
-                    let transformError = unkeyedTransformError(container: self, codingPath: codingPath, index: currentIndex)
+                    let transformError = unkeyedTransformError(container: self, index: currentIndex)
                     
                     guard let result = map(try decode(T.self)) else {
                         throw transformError

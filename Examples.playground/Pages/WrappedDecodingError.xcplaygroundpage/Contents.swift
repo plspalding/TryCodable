@@ -11,7 +11,7 @@ struct Value {
 let data =
     """
 {
-    "a": "2kjl",
+    "a": "2",
     "b": ["1", 2]
 }
 """.data(using: .utf8)!
@@ -21,8 +21,7 @@ extension Value: Decodable {
     
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        
-        a = 3// try container.decode(.a, map: {(s: String) in Int(s) }).valueOrThrow()
+        a = try container.decode(.a, map: {(s: String) in Int(s) }).valueOrThrow()
         
         b = try container.decode(.b, map: {(s: String) in Int(s) }).valueOrThrow()
     }

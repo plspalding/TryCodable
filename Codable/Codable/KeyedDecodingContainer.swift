@@ -35,7 +35,7 @@ extension KeyedDecodingContainer {
     {
         return Decode {
             guard let result = map(try decode(T.self, forKey: key)) else {
-                throw keyedTransformError(key: key, container: self, codingPath: codingPath)
+                throw keyedTransformError(key: key, container: self)
             }
             return result
         }
