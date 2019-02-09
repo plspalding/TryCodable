@@ -10,13 +10,6 @@ import Foundation
 
 extension SingleValueDecodingContainer {
     
-    func decode<T: Decodable>() -> Decode<T>
-    {
-        return Decode {
-            return try decode(T.self)
-        }
-    }
-    
     func decode<T: Decodable, U>(
         map: (T) -> U?)
         -> Decode<U>
@@ -26,6 +19,13 @@ extension SingleValueDecodingContainer {
                 throw singleTransformError(container: self)
             }
             return result
+        }
+    }
+    
+    func decode<T: Decodable>() -> Decode<T>
+    {
+        return Decode {
+            return try decode(T.self)
         }
     }
 }

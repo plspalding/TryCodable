@@ -26,11 +26,15 @@
 import Foundation
 
 public struct WrappedDecodingError: Error {
-    public let decodingError: DecodingError?
+    public let decodingError: DecodingError
     
     public let file: String
     public let function: String
     public let line: Int
+    
+    var message: String {
+        return decodingError.message
+    }
 }
 
 func keyedTransformError<K: CodingKey>(
@@ -68,5 +72,19 @@ extension DecodingError {
         case let .dataCorrupted(context):
             return context.debugDescription
         }
+    }
+    
+    public static func unknown(
+        codingPath: [CodingKey],
+        error: Error)
+        -> DecodingError
+    {
+        return .dataCorrupted(
+            DecodingError.Context.init(
+                codingPath: codingPath,
+                debugDescription: "Unknown error. See underlying Error for more details",
+                underlyingError: error
+            )
+        )
     }
 }

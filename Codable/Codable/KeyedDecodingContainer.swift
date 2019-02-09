@@ -30,7 +30,7 @@ extension KeyedDecodingContainer {
     
     public func decode<T: Decodable, U>(
         _ key: Key,
-        map: (T) -> U?)
+        map: @escaping (T) -> U?)
         -> Decode<U>
     {
         return Decode {
@@ -58,8 +58,10 @@ extension KeyedDecodingContainer {
         do {
             var unkeyedContainer = try nestedUnkeyedContainer(forKey: key)
             return unkeyedContainer.decode(all: type, map: id)
-        } catch {
+        } catch let error as DecodingError {
             return Decode<[T]>.failure(error)
+        } catch {
+            return Decode<[T]>.failure(.unknown(codingPath: codingPath, error: error))
         }
     }
     
@@ -73,8 +75,10 @@ extension KeyedDecodingContainer {
         do {
             var unkeyedContainer = try nestedUnkeyedContainer(forKey: key)
             return unkeyedContainer.decode(all: type, map: map)
-        } catch {
+        } catch let error as DecodingError {
             return Decode<[U]>.failure(error)
+        } catch {
+            return Decode<[U]>.failure(.unknown(codingPath: codingPath, error: error))
         }
     }
 }
@@ -90,8 +94,10 @@ extension KeyedDecodingContainer {
         do {
             var unkeyedContainer = try nestedUnkeyedContainer(forKey: key)
             return unkeyedContainer.decode(any: type, map: id, log: log)
-        } catch {
+        } catch let error as DecodingError {
             return Decode<[T]>.failure(error)
+        } catch {
+            return Decode<[T]>.failure(.unknown(codingPath: codingPath, error: error))
         }
     }
     
@@ -105,19 +111,22 @@ extension KeyedDecodingContainer {
         do {
             var unkeyedContainer = try nestedUnkeyedContainer(forKey: key)
             return unkeyedContainer.decode(any: type, map: map, log: log)
-        } catch {
+        } catch let error as DecodingError {
             return Decode<[U]>.failure(error)
+        } catch {
+            return Decode<[U]>.failure(.unknown(codingPath: codingPath, error: error))
         }
     }
 }
 
+// TODO: Add KeyPath API's and tests
 // MARK:- KeyPath API
-extension KeyedDecodingContainer {
-    public func decode<T: Decodable, U>(
-        _ key: Key,
-        map: KeyPath<T, U?>)
-        -> Decode<U>
-    {
-        return decode(key, map: ^map)
-    }
-}
+//extension KeyedDecodingContainer {
+//    public func decode<T: Decodable, U>(
+//        _ key: Key,
+//        map: KeyPath<T, U?>)
+//        -> Decode<U>
+//    {
+//        return decode(key, map: ^map)
+//    }
+//}

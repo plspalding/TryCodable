@@ -27,12 +27,15 @@ import Foundation
 
 public enum Decode<T> {
     case successful(T)
-    case failure(Error)
+    case failure(DecodingError)
     init(f: () throws -> T) {
         do {
             self = .successful(try f())
-        } catch {
+        } catch let error as DecodingError {
             self = .failure(error)
+        } catch {
+            let decodingError = DecodingError.dataCorrupted(DecodingError.Context(codingPath: [], debugDescription: "Unknown Error", underlyingError: error))
+            self = .failure(decodingError)
         }
     }
     
@@ -45,7 +48,13 @@ public enum Decode<T> {
         switch self {
         case .successful(let value): return value
         case .failure(let e):
-            let error = WrappedDecodingError(decodingError: e as? DecodingError, file: file, function: function, line: line)
+            
+            let error = WrappedDecodingError(
+                decodingError: e,
+                file: file,
+                function: function,
+                line: line
+            )
             throw error
         }
     }
@@ -81,6 +90,21 @@ public enum Decode<T> {
             return f(value)
         case .failure(let error):
             return .failure(error)
+        }
+    }
+}
+
+extension Decode: Equatable where T: Equatable {
+    public static func ==(lhs: Decode, rhs: Decode) -> Bool {
+        switch (lhs, rhs) {
+        case let (.successful(v), .successful(v1)): return v == v1
+        case let (.failure(e), .failure(e1)):
+            return e.errorDescription == e1.errorDescription
+                && e.failureReason == e1.failureReason
+                && e.helpAnchor == e1.helpAnchor
+                && e.localizedDescription == e1.localizedDescription
+                && e.recoverySuggestion == e1.recoverySuggestion
+        case (_, _): return false
         }
     }
 }
