@@ -3,34 +3,28 @@
 //  CodableTests
 //
 //  Created by Preston Spalding on 05/02/2019.
-//  Copyright © 2019 Preston Spalding. All rights reserved.
+//  Copyright © 2019 Preston Spalding.
 //
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 
 import XCTest
 @testable import Codable
-
-private enum CodingKeys: CodingKey {
-    case name
-    case names
-    case numbers
-    case age
-}
-
-
-private let data =
-"""
-{
-"name": "James",
-"names": ["James", "Earl", "Jones"],
-"numbers": [1, "2", 3, 4, "5"]
-}
-""".data(using: .utf8)!
-
-extension String {
-    var returnNil: String? {
-        return nil
-    }
-}
 
 // MARK:- Standard decode function tests
 class KeyedDecodingContainerTests: XCTestCase {
@@ -102,7 +96,7 @@ extension KeyedDecodingContainerTests {
     
     func test_can_decode_all_values() {
         struct A: Decodable {
-            var names: [String] = []
+            var names: [String]
             
             init(from decoder: Decoder) throws {
                 let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -115,7 +109,7 @@ extension KeyedDecodingContainerTests {
     
     func test_can_decode_all_and_transform_values() {
         struct A: Decodable {
-            var names: [String] = []
+            var names: [String]
             
             init(from decoder: Decoder) throws {
                 let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -144,7 +138,7 @@ extension KeyedDecodingContainerTests {
 
     func test_decode_all_value_throws_error_when_a_transform_fails() {
         struct A: Decodable {
-            var names: [String] = []
+            var names: [String]
 
             init(from decoder: Decoder) throws {
                 let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -166,7 +160,7 @@ extension KeyedDecodingContainerTests {
     
     func test_can_decode_any_values_() {
         struct A: Decodable {
-            var numbers: [Int] = []
+            var numbers: [Int]
             
             init(from decoder: Decoder) throws {
                 let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -179,7 +173,7 @@ extension KeyedDecodingContainerTests {
     
     func test_can_decode_any_and_transform_values() {
         struct A: Decodable {
-            var numbers: [Int] = []
+            var numbers: [Int]
 
             init(from decoder: Decoder) throws {
                 let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -204,5 +198,50 @@ extension KeyedDecodingContainerTests {
             let _ = try JSONDecoder().decode(A.self, from: data)
             XCTFail()
         } catch {}
+    }
+}
+
+
+// MARK:- Decode KeyPath tests
+extension KeyedDecodingContainerTests {
+    
+    func test_can_decode_and_transform_using_keyPath() {
+        struct A: Decodable {
+            var nameCount: Int
+            
+            init(from decoder: Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                nameCount = container.decode(.name, map: \String.count ).valueElse(0)
+            }
+        }
+        let a = try! JSONDecoder().decode(A.self, from: data)
+        XCTAssert(a.nameCount == 5)
+    }
+    
+    func test_can_decode_all_and_transform_using_keyPath() {
+        struct A: Decodable {
+            var countOfNames: [Int]
+            
+            init(from decoder: Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                countOfNames = container.decode(.names, map: \String.count ).valueElse([0])
+            }
+        }
+        let a = try! JSONDecoder().decode(A.self, from: data)
+        XCTAssert(a.countOfNames == [5,4,5])
+    }
+    
+    func test_can_decode_any_and_tranform_transform_using_keyPath() {
+        struct A: Decodable {
+            var numbers: [Int]
+            
+            init(from decoder: Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                numbers = container.decode(any: Int.self, .numbers, map: \Int.double).valueElse([])
+                
+            }
+        }
+        let a = try! JSONDecoder().decode(A.self, from: data)
+        XCTAssert(a.numbers == [2,6,8])
     }
 }

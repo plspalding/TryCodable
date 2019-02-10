@@ -3,96 +3,59 @@
 //  CodableTests
 //
 //  Created by Preston Spalding on 06/02/2019.
-//  Copyright © 2019 Preston Spalding. All rights reserved.
+//  Copyright © 2019 Preston Spalding.
 //
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 
-import Foundation
+//import Foundation
 
-//class KeyedDecodingContainerTests: XCTestCase {
-//
-//    func test_can_decode_simple_value() {
-//
-//        let a = A(key: CodingKeys.a) { (container, k) -> String in
-//            let value = container.decode(k).valueElse("Hello", log: .active)
-//
-//            print("================= + \(value)")
-//            return value
-//        }
-//
-//        a.test(a: a)
-//        //        let b = A.B(from: )
-//
-//        enum CodingKeys: CodingKey {
-//            case a
-//        }
-//    }
-//}
+enum CodingKeys: CodingKey {
+    case name
+    case names
+    case numbers
+    case age
+}
 
-//let data =
-//    """
-//    {
-//        "a": "Value"
-//    }
-//    """.data(using: .utf8)!
-//
-//class A<T: Decodable, K: CodingKey> {
-//    
-//    let key: K
-//    let g: (KeyedDecodingContainer<K>, K) -> T //= { _ in fatalError() }
-//    //let a: T
-//    
-//    init (key: K, f: @escaping (KeyedDecodingContainer<K>, K) -> T) {
-//        self.key = key
-//        g = f
-//    }
-//    
-//    func test(a: A) {
-//        let result = try! JSONDecoder().decode(A.B.self, from: data)
-//        print("BOOOM!!!!! + \(result)")
-//    }
-//    
-////    required init(from decoder: Decoder) {
-////        let container = try! decoder.container(keyedBy: K.self)
-////    }
-//    
-//    class B: Decodable {
-//        
-//        static var a: A!
-//        
-//        required init(from decoder: Decoder) {
-//            let container = try! decoder.container(keyedBy: K.self)
-//            
-////            container.decode(T.self) { (Decodable) -> Decodable? in
-////                return nil
-////            }
-//            
-////            let _ = a.g(container, a.key)
-//        }
-//        
-//        enum CodingKeys: CodingKey {
-//            case a
-//        }
-//    }
-//    
-//    
-//}
-//
-//class Values<T>: NSObject {
-//    
-//    let f: (CodingKey) -> T
-//    
-//    var a: String = ""
-//    var b: Int = 0
-//    
-//    public enum CodingKeys: CodingKey {
-//        case a
-//        case b
-//    }
-//    
-//    init(f: @escaping (CodingKey) -> T) {
-//        self.f = f
-//    }
-//    
-//    
-//}
-//
+let data =
+    """
+{
+"name": "James",
+"names": ["James", "Earl", "Jones"],
+"numbers": [1, "2", 3, 4, "5"]
+}
+""".data(using: .utf8)!
+
+let singlevalueData =
+    """
+{
+"name": "James"
+}
+""".data(using: .utf8)!
+
+extension String {
+    var returnNil: String? {
+        return nil
+    }
+}
+
+extension Int {
+    var double: Int {
+        return self * 2
+    }
+}

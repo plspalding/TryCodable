@@ -66,6 +66,7 @@ public enum Decode<T> {
         }
     }
     
+    // TODO: Add better logging. Maybe append with Failed to parse.
     public func valueElse(_ defaultValue: @autoclosure () -> T, log: Logger = .inactive) -> T {
         switch self {
         case .successful(let value): return value

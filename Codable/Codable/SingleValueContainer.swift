@@ -10,7 +10,7 @@ import Foundation
 
 extension SingleValueDecodingContainer {
     
-    func decode<T: Decodable, U>(
+    public func decode<T: Decodable, U>(
         map: (T) -> U?)
         -> Decode<U>
     {
@@ -22,10 +22,22 @@ extension SingleValueDecodingContainer {
         }
     }
     
-    func decode<T: Decodable>() -> Decode<T>
+    public func decode<T: Decodable>() -> Decode<T>
     {
-        return Decode {
-            return try decode(T.self)
-        }
+        return decode(map: id)
+    }
+    
+    public func decode<T: Decodable, U>(
+        map: KeyPath<T, U>)
+        -> Decode<U>
+    {
+        return decode(map: ^map)
+    }
+    
+    public func decode<T: Decodable, U>(
+        map: KeyPath<T, U?>)
+        -> Decode<U>
+    {
+        return decode(map: ^map)
     }
 }

@@ -25,6 +25,8 @@
 
 import Foundation
 
+// TODO: Add API where return type is URL that checks to see if the http of a URL is https. Has bool allowHTTP.
+
 // MARK:- Standard API
 extension KeyedDecodingContainer {
     
@@ -119,14 +121,61 @@ extension KeyedDecodingContainer {
     }
 }
 
-// TODO: Add KeyPath API's and tests
 // MARK:- KeyPath API
-//extension KeyedDecodingContainer {
-//    public func decode<T: Decodable, U>(
-//        _ key: Key,
-//        map: KeyPath<T, U?>)
-//        -> Decode<U>
-//    {
-//        return decode(key, map: ^map)
-//    }
-//}
+extension KeyedDecodingContainer {
+    public func decode<T: Decodable, U>(
+        _ key: Key,
+        map: KeyPath<T, U>)
+        -> Decode<U>
+    {
+        return decode(key, map: ^map)
+    }
+    
+    public func decode<T: Decodable, U>(
+        _ key: Key,
+        map: KeyPath<T, U?>)
+        -> Decode<U>
+    {
+        return decode(key, map: ^map)
+    }
+    
+    public func decode<T: Decodable, U>(
+        all type: T.Type = T.self,
+        _ key: Key,
+        map: KeyPath<T, U>,
+        log: Logger = .inactive)
+        -> Decode<[U]>
+    {
+        return decode(all: type, key, map: ^map, log: log)
+    }
+    
+    public func decode<T: Decodable, U>(
+        all type: T.Type = T.self,
+        _ key: Key,
+        map: KeyPath<T, U?>,
+        log: Logger = .inactive)
+        -> Decode<[U]>
+    {
+        return decode(all: type, key, map: ^map, log: log)
+    }
+    
+    public func decode<T: Decodable, U>(
+        any type: T.Type,
+        _ key: Key,
+        map: KeyPath<T, U>,
+        log: Logger = .inactive)
+        -> Decode<[U]>
+    {
+        return decode(any: type, key, map: ^map, log: log)
+    }
+    
+    public func decode<T: Decodable, U>(
+        any type: T.Type,
+        _ key: Key,
+        map: KeyPath<T, U?>,
+        log: Logger = .inactive)
+        -> Decode<[U]>
+    {
+        return decode(any: type, key, map: ^map, log: log)
+    }
+}

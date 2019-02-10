@@ -28,7 +28,7 @@ import Foundation
 // MARK:- Decode All
 extension UnkeyedDecodingContainer {
     public mutating func decode<T: Decodable, U>(
-        all type: T.Type,
+        all type: T.Type = T.self,
         map: (T) -> U?)
         -> Decode<[U]>
     {
@@ -56,14 +56,6 @@ extension UnkeyedDecodingContainer {
         -> Decode<[T]>
     {
         return decode(all: type, map: id)
-    }
-    
-    public mutating func decode<T: Decodable, U>(
-        all type: T.Type = T.self,
-        map: KeyPath<T, U?>)
-        -> Decode<[U]>
-    {
-        return decode(all: type, map: ^map)
     }
 }
 
@@ -96,13 +88,43 @@ extension UnkeyedDecodingContainer {
     {
         return decode(any: type, map: id, log: log)
     }
+}
+
+// KeyPath
+
+extension UnkeyedDecodingContainer {
+    
+    public mutating func decode<T: Decodable, U>(
+        all type: T.Type = T.self,
+        map: KeyPath<T, U>)
+        -> Decode<[U]>
+    {
+        return decode(all: type, map: ^map)
+    }
+    
+    public mutating func decode<T: Decodable, U>(
+        all type: T.Type = T.self,
+        map: KeyPath<T, U?>)
+        -> Decode<[U]>
+    {
+        return decode(all: type, map: ^map)
+    }
     
     public mutating func decode<T: Decodable, U>(
         _ type: T.Type,
-        map: (T) -> U,
+        map: KeyPath<T, U>,
         log: Logger = .inactive)
         -> Decode<[U]>
     {
-        return decode(any: type, map: map, log: log)
+        return decode(any: type, map: ^map, log: log)
+    }
+    
+    public mutating func decode<T: Decodable, U>(
+        _ type: T.Type,
+        map: KeyPath<T, U?>,
+        log: Logger = .inactive)
+        -> Decode<[U]>
+    {
+        return decode(any: type, map: ^map, log: log)
     }
 }

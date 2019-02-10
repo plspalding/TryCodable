@@ -27,7 +27,6 @@ extension Values: Decodable {
     
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        
         a = try container.decode(.a).valueOrThrow()
         b = try container.decode(.b, map: { (s: String) in s.uppercased() }).valueOrThrow()
         c = container.decode(.c).valueOrNil()
