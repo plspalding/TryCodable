@@ -25,7 +25,7 @@
 
 import Foundation
 
-public enum Decode<T> {
+public enum TryCodable<T> {
     case successful(T)
     case failure(DecodingError)
     init(f: () throws -> T) {
@@ -34,7 +34,7 @@ public enum Decode<T> {
         } catch let error as DecodingError {
             self = .failure(error)
         } catch {
-            let decodingError = DecodingError.dataCorrupted(DecodingError.Context(codingPath: [], debugDescription: "Unknown Error", underlyingError: error))
+            let decodingError = DecodingError.unknown(codingPath: [], error: error)
             self = .failure(decodingError)
         }
     }
@@ -48,13 +48,24 @@ public enum Decode<T> {
         switch self {
         case .successful(let value): return value
         case .failure(let e):
-            
             let error = WrappedDecodingError(
                 decodingError: e,
                 file: file,
                 function: function,
                 line: line
             )
+            
+            // We want to check if an underlying error is a WrappedDecodingError. If so then we just want to
+            // return the underlying error as that will be the first point in which the users code failed.
+            switch error.decodingError {
+            case .dataCorrupted(let context):
+                if let wrappedError = context.underlyingError as? WrappedDecodingError {
+                    throw wrappedError
+                }
+            default:
+                throw error
+            }
+            
             throw error
         }
     }
@@ -76,7 +87,7 @@ public enum Decode<T> {
         }
     }
     
-    public func map<U>(_ f: (T) -> U) -> Decode<U> {
+    public func map<U>(_ f: (T) -> U) -> TryCodable<U> {
         switch self {
         case .successful(let value):
             return .successful(f(value))
@@ -85,7 +96,7 @@ public enum Decode<T> {
         }
     }
     
-    public func flatMap<U>(_ f: (T) -> Decode<U>) -> Decode<U> {
+    public func flatMap<U>(_ f: (T) -> TryCodable<U>) -> TryCodable<U> {
         switch self {
         case .successful(let value):
             return f(value)
@@ -95,8 +106,8 @@ public enum Decode<T> {
     }
 }
 
-extension Decode: Equatable where T: Equatable {
-    public static func ==(lhs: Decode, rhs: Decode) -> Bool {
+extension TryCodable: Equatable where T: Equatable {
+    public static func ==(lhs: TryCodable, rhs: TryCodable) -> Bool {
         switch (lhs, rhs) {
         case let (.successful(v), .successful(v1)): return v == v1
         case let (.failure(e), .failure(e1)):

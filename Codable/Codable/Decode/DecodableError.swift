@@ -60,6 +60,12 @@ func singleTransformError(
     return .dataCorruptedError(in: container, debugDescription: "Failed to transform data")
 }
 
+func transformError()
+    -> DecodingError
+{
+    return .dataCorrupted(DecodingError.Context(codingPath: [], debugDescription: "Failed to transform data"))
+}
+
 extension DecodingError {
     public var message: String {
         switch self {

@@ -27,6 +27,7 @@
 
 enum CodingKeys: CodingKey {
     case name
+    case firstName
     case names
     case numbers
     case age
@@ -45,6 +46,13 @@ let singlevalueData =
     """
 {
 "name": "James"
+}
+""".data(using: .utf8)!
+
+let camelCaseKeyData =
+    """
+{
+"first_name": "James"
 }
 """.data(using: .utf8)!
 

@@ -30,9 +30,9 @@ extension UnkeyedDecodingContainer {
     public mutating func decode<T: Decodable, U>(
         all type: T.Type = T.self,
         map: (T) -> U?)
-        -> Decode<[U]>
+        -> TryCodable<[U]>
     {
-        return Decode {
+        return TryCodable {
             var array: [U] = []
             while !isAtEnd {
                 do {
@@ -53,7 +53,7 @@ extension UnkeyedDecodingContainer {
     
     public mutating func decode<T: Decodable>(
         all type: T.Type = T.self)
-        -> Decode<[T]>
+        -> TryCodable<[T]>
     {
         return decode(all: type, map: id)
     }
@@ -65,9 +65,9 @@ extension UnkeyedDecodingContainer {
         any type: T.Type,
         map: (T) -> U?,
         log: Logger = .inactive)
-        -> Decode<[U]>
+        -> TryCodable<[U]>
     {
-        return Decode {
+        return TryCodable {
             var array: [U?] = []
             while !isAtEnd {
                 do {
@@ -84,7 +84,7 @@ extension UnkeyedDecodingContainer {
     public mutating func decode<T: Decodable>(
         any type: T.Type,
         log: Logger = .inactive)
-        -> Decode<[T]>
+        -> TryCodable<[T]>
     {
         return decode(any: type, map: id, log: log)
     }
@@ -97,7 +97,7 @@ extension UnkeyedDecodingContainer {
     public mutating func decode<T: Decodable, U>(
         all type: T.Type = T.self,
         map: KeyPath<T, U>)
-        -> Decode<[U]>
+        -> TryCodable<[U]>
     {
         return decode(all: type, map: ^map)
     }
@@ -105,7 +105,7 @@ extension UnkeyedDecodingContainer {
     public mutating func decode<T: Decodable, U>(
         all type: T.Type = T.self,
         map: KeyPath<T, U?>)
-        -> Decode<[U]>
+        -> TryCodable<[U]>
     {
         return decode(all: type, map: ^map)
     }
@@ -114,7 +114,7 @@ extension UnkeyedDecodingContainer {
         _ type: T.Type,
         map: KeyPath<T, U>,
         log: Logger = .inactive)
-        -> Decode<[U]>
+        -> TryCodable<[U]>
     {
         return decode(any: type, map: ^map, log: log)
     }
@@ -123,7 +123,7 @@ extension UnkeyedDecodingContainer {
         _ type: T.Type,
         map: KeyPath<T, U?>,
         log: Logger = .inactive)
-        -> Decode<[U]>
+        -> TryCodable<[U]>
     {
         return decode(any: type, map: ^map, log: log)
     }

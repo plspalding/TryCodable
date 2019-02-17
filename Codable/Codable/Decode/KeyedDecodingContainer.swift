@@ -33,9 +33,9 @@ extension KeyedDecodingContainer {
     public func decode<T: Decodable, U>(
         _ key: Key,
         map: @escaping (T) -> U?)
-        -> Decode<U>
+        -> TryCodable<U>
     {
-        return Decode {
+        return TryCodable {
             guard let result = map(try decode(T.self, forKey: key)) else {
                 throw keyedTransformError(key: key, container: self)
             }
@@ -43,7 +43,7 @@ extension KeyedDecodingContainer {
         }
     }
     
-    public func decode<T: Decodable>(_ key: Key) -> Decode<T> {
+    public func decode<T: Decodable>(_ key: Key) -> TryCodable<T> {
         return decode(key, map: id)
     }
 }
@@ -55,15 +55,15 @@ extension KeyedDecodingContainer {
         all type: T.Type = T.self,
         _ key: Key,
         log: Logger = .inactive)
-        -> Decode<[T]>
+        -> TryCodable<[T]>
     {
         do {
             var unkeyedContainer = try nestedUnkeyedContainer(forKey: key)
             return unkeyedContainer.decode(all: type, map: id)
         } catch let error as DecodingError {
-            return Decode<[T]>.failure(error)
+            return TryCodable<[T]>.failure(error)
         } catch {
-            return Decode<[T]>.failure(.unknown(codingPath: codingPath, error: error))
+            return TryCodable<[T]>.failure(.unknown(codingPath: codingPath, error: error))
         }
     }
     
@@ -72,15 +72,15 @@ extension KeyedDecodingContainer {
         _ key: Key,
         map: @escaping (T) -> U?,
         log: Logger = .inactive)
-        -> Decode<[U]>
+        -> TryCodable<[U]>
     {
         do {
             var unkeyedContainer = try nestedUnkeyedContainer(forKey: key)
             return unkeyedContainer.decode(all: type, map: map)
         } catch let error as DecodingError {
-            return Decode<[U]>.failure(error)
+            return TryCodable<[U]>.failure(error)
         } catch {
-            return Decode<[U]>.failure(.unknown(codingPath: codingPath, error: error))
+            return TryCodable<[U]>.failure(.unknown(codingPath: codingPath, error: error))
         }
     }
 }
@@ -91,15 +91,15 @@ extension KeyedDecodingContainer {
         any type: T.Type,
         _ key: Key,
         log: Logger = .inactive)
-        -> Decode<[T]>
+        -> TryCodable<[T]>
     {
         do {
             var unkeyedContainer = try nestedUnkeyedContainer(forKey: key)
             return unkeyedContainer.decode(any: type, map: id, log: log)
         } catch let error as DecodingError {
-            return Decode<[T]>.failure(error)
+            return TryCodable<[T]>.failure(error)
         } catch {
-            return Decode<[T]>.failure(.unknown(codingPath: codingPath, error: error))
+            return TryCodable<[T]>.failure(.unknown(codingPath: codingPath, error: error))
         }
     }
     
@@ -108,15 +108,15 @@ extension KeyedDecodingContainer {
         _ key: Key,
         map: @escaping (T) -> U?,
         log: Logger = .inactive)
-        -> Decode<[U]>
+        -> TryCodable<[U]>
     {
         do {
             var unkeyedContainer = try nestedUnkeyedContainer(forKey: key)
             return unkeyedContainer.decode(any: type, map: map, log: log)
         } catch let error as DecodingError {
-            return Decode<[U]>.failure(error)
+            return TryCodable<[U]>.failure(error)
         } catch {
-            return Decode<[U]>.failure(.unknown(codingPath: codingPath, error: error))
+            return TryCodable<[U]>.failure(.unknown(codingPath: codingPath, error: error))
         }
     }
 }
@@ -126,7 +126,7 @@ extension KeyedDecodingContainer {
     public func decode<T: Decodable, U>(
         _ key: Key,
         map: KeyPath<T, U>)
-        -> Decode<U>
+        -> TryCodable<U>
     {
         return decode(key, map: ^map)
     }
@@ -134,7 +134,7 @@ extension KeyedDecodingContainer {
     public func decode<T: Decodable, U>(
         _ key: Key,
         map: KeyPath<T, U?>)
-        -> Decode<U>
+        -> TryCodable<U>
     {
         return decode(key, map: ^map)
     }
@@ -144,7 +144,7 @@ extension KeyedDecodingContainer {
         _ key: Key,
         map: KeyPath<T, U>,
         log: Logger = .inactive)
-        -> Decode<[U]>
+        -> TryCodable<[U]>
     {
         return decode(all: type, key, map: ^map, log: log)
     }
@@ -154,7 +154,7 @@ extension KeyedDecodingContainer {
         _ key: Key,
         map: KeyPath<T, U?>,
         log: Logger = .inactive)
-        -> Decode<[U]>
+        -> TryCodable<[U]>
     {
         return decode(all: type, key, map: ^map, log: log)
     }
@@ -164,7 +164,7 @@ extension KeyedDecodingContainer {
         _ key: Key,
         map: KeyPath<T, U>,
         log: Logger = .inactive)
-        -> Decode<[U]>
+        -> TryCodable<[U]>
     {
         return decode(any: type, key, map: ^map, log: log)
     }
@@ -174,7 +174,7 @@ extension KeyedDecodingContainer {
         _ key: Key,
         map: KeyPath<T, U?>,
         log: Logger = .inactive)
-        -> Decode<[U]>
+        -> TryCodable<[U]>
     {
         return decode(any: type, key, map: ^map, log: log)
     }

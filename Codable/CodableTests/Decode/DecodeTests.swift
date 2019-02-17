@@ -32,13 +32,13 @@ class DecodeTests: XCTestCase {
         .dataCorrupted(DecodingError.Context(codingPath: [], debugDescription: "Test Error"))
     
     func test_valueOrThrow_returns_value() {
-        let decode = Decode.successful("Value")
+        let decode = TryCodable.successful("Value")
         XCTAssert(try! decode.valueOrThrow() == "Value")
     }
     
     func test_valueOrThrow_throws_error_if_value_is_nil() {
         
-        let decode = Decode<String>.failure(testDecodeError)
+        let decode = TryCodable<String>.failure(testDecodeError)
         
         do {
             let _ = try decode.valueOrThrow()
@@ -49,22 +49,22 @@ class DecodeTests: XCTestCase {
     }
     
     func test_valueOrNil_returns_value() {
-        let decode = Decode.successful("Value")
+        let decode = TryCodable.successful("Value")
         XCTAssert(decode.valueOrNil() == "Value")
     }
     
     func test_valueOrNil_returns_nil_if_value_is_nil() {
-        let decode = Decode<String>.failure(testDecodeError)
+        let decode = TryCodable<String>.failure(testDecodeError)
         XCTAssert(decode.valueOrNil() == nil)
     }
     
     func test_valueOrElse_returns_value() {
-        let decode = Decode<String>.successful("Value")
+        let decode = TryCodable<String>.successful("Value")
         XCTAssert(decode.valueElse("Default") == "Value")
     }
     
     func test_valueOrElse_returns_else_value() {
-        let decode = Decode<String>.failure(testDecodeError)
+        let decode = TryCodable<String>.failure(testDecodeError)
         XCTAssert(decode.valueElse("Default") == "Default")
     }
 }
