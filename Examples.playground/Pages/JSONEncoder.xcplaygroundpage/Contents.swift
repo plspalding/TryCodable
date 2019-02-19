@@ -1,7 +1,7 @@
 //: [Previous](@previous)
 
 import Foundation
-import Codable
+import TryCodable
 
 struct A: Encodable {
     let a: String

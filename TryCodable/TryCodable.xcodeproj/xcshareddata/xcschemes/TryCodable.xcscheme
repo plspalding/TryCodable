@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "5A107E452203B180006D969A"
-               BuildableName = "Codable.framework"
-               BlueprintName = "Codable"
-               ReferencedContainer = "container:Codable.xcodeproj">
+               BuildableName = "TryCodable.framework"
+               BlueprintName = "TryCodable"
+               ReferencedContainer = "container:TryCodable.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "5A107E4E2203B180006D969A"
-               BuildableName = "CodableTests.xctest"
-               BlueprintName = "CodableTests"
-               ReferencedContainer = "container:Codable.xcodeproj">
+               BuildableName = "TryCodableTests.xctest"
+               BlueprintName = "TryCodableTests"
+               ReferencedContainer = "container:TryCodable.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -43,9 +43,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "5A107E452203B180006D969A"
-            BuildableName = "Codable.framework"
-            BlueprintName = "Codable"
-            ReferencedContainer = "container:Codable.xcodeproj">
+            BuildableName = "TryCodable.framework"
+            BlueprintName = "TryCodable"
+            ReferencedContainer = "container:TryCodable.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -65,9 +65,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "5A107E452203B180006D969A"
-            BuildableName = "Codable.framework"
-            BlueprintName = "Codable"
-            ReferencedContainer = "container:Codable.xcodeproj">
+            BuildableName = "TryCodable.framework"
+            BlueprintName = "TryCodable"
+            ReferencedContainer = "container:TryCodable.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -83,9 +83,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "5A107E452203B180006D969A"
-            BuildableName = "Codable.framework"
-            BlueprintName = "Codable"
-            ReferencedContainer = "container:Codable.xcodeproj">
+            BuildableName = "TryCodable.framework"
+            BlueprintName = "TryCodable"
+            ReferencedContainer = "container:TryCodable.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>

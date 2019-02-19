@@ -1,6 +1,6 @@
 //
-//  Codable.h
-//  Codable
+//  TryCodable.h
+//  TryCodable
 //
 //  Created by Preston Spalding on 31/01/2019.
 //  Copyright © 2019 Preston Spalding.
@@ -25,12 +25,12 @@
 
 #import <UIKit/UIKit.h>
 
-//! Project version number for Codable.
-FOUNDATION_EXPORT double CodableVersionNumber;
+//! Project version number for TryCodable.
+FOUNDATION_EXPORT double TryCodableVersionNumber;
 
-//! Project version string for Codable.
-FOUNDATION_EXPORT const unsigned char CodableVersionString[];
+//! Project version string for TryCodable.
+FOUNDATION_EXPORT const unsigned char TryCodableVersionString[];
 
-// In this header, you should import all the public headers of your framework using statements like #import <Codable/PublicHeader.h>
+// In this header, you should import all the public headers of your framework using statements like #import <TryCodable/PublicHeader.h>
 
 

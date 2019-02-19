@@ -1,8 +1,8 @@
 //
-//  Models.swift
-//  CodableTests
+//  Helpers.swift
+//  TryCodable
 //
-//  Created by Preston Spalding on 06/02/2019.
+//  Created by Preston Spalding on 03/02/2019.
 //  Copyright © 2019 Preston Spalding.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,47 +23,48 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-//import Foundation
+import Foundation
 
-enum CodingKeys: CodingKey {
-    case name
-    case firstName
-    case names
-    case numbers
-    case age
-}
+struct AnyCodable: Codable {}
 
-let data =
-    """
-{
-"name": "James",
-"names": ["James", "Earl", "Jones"],
-"numbers": [1, "2", 3, 4, "5"]
-}
-""".data(using: .utf8)!
+extension String: Error { }
 
-let singlevalueData =
-    """
-{
-"name": "James"
-}
-""".data(using: .utf8)!
+prefix operator ^
 
-let camelCaseKeyData =
-    """
-{
-"first_name": "James"
-}
-""".data(using: .utf8)!
-
-extension String {
-    var returnNil: String? {
-        return nil
+prefix func ^<A, B>(_ keyPath: KeyPath<A, B>) -> (A) -> B {
+    return { a in
+        a[keyPath: keyPath]
     }
 }
 
-extension Int {
-    var double: Int {
-        return self * 2
+func id<A>(_ value: A) -> A {
+    return value
+}
+
+extension Optional {
+    
+    var isNil: Bool {
+        return self == nil
+    }
+    
+    var isNotNil: Bool {
+        return !isNil
+    }
+}
+
+public enum Logger {
+    
+    case inactive
+    case active
+    
+    func perform(with error: Error, index: Int?) {
+        switch self {
+        case .inactive: break
+        case .active:
+            let indexMessage = index.isNotNil ? " Index: \(index!)" : ""
+            
+            guard let e = error as? DecodingError else { print("Unknown error: \(error)" + indexMessage); return }
+            print(e.message + indexMessage)
+        }
     }
 }

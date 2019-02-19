@@ -1,6 +1,6 @@
 //
 //  KeyedDecodingContainerTests.swift
-//  CodableTests
+//  TryCodableTests
 //
 //  Created by Preston Spalding on 05/02/2019.
 //  Copyright © 2019 Preston Spalding.
@@ -24,7 +24,7 @@
 // THE SOFTWARE.
 
 import XCTest
-@testable import Codable
+@testable import TryCodable
 
 // MARK:- Standard decode function tests
 class KeyedDecodingContainerTests: XCTestCase {

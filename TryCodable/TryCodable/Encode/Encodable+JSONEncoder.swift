@@ -1,6 +1,6 @@
 //
 //  JSONEncoder.swift
-//  Codable
+//  TryCodable
 //
 //  Created by Preston Spalding on 17/02/2019.
 //  Copyright © 2019 Preston Spalding. All rights reserved.

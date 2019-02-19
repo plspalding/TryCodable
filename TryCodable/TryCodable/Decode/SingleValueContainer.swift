@@ -1,8 +1,8 @@
 //
-//  Helpers.swift
-//  Codable
+//  SingleValueContainer.swift
+//  TryCodable
 //
-//  Created by Preston Spalding on 03/02/2019.
+//  Created by Preston Spalding on 05/02/2019.
 //  Copyright © 2019 Preston Spalding.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,46 +25,36 @@
 
 import Foundation
 
-struct AnyCodable: Codable {}
-
-extension String: Error { }
-
-prefix operator ^
-
-prefix func ^<A, B>(_ keyPath: KeyPath<A, B>) -> (A) -> B {
-    return { a in
-        a[keyPath: keyPath]
-    }
-}
-
-func id<A>(_ value: A) -> A {
-    return value
-}
-
-extension Optional {
+extension SingleValueDecodingContainer {
     
-    var isNil: Bool {
-        return self == nil
-    }
-    
-    var isNotNil: Bool {
-        return !isNil
-    }
-}
-
-public enum Logger {
-    
-    case inactive
-    case active
-    
-    func perform(with error: Error, index: Int?) {
-        switch self {
-        case .inactive: break
-        case .active:
-            let indexMessage = index.isNotNil ? " Index: \(index!)" : ""
-            
-            guard let e = error as? DecodingError else { print("Unknown error: \(error)" + indexMessage); return }
-            print(e.message + indexMessage)
+    public func decode<T: Decodable, U>(
+        map: (T) -> U?)
+        -> TryCodable<U>
+    {
+        return TryCodable {
+            guard let result = map(try decode(T.self)) else {
+                throw singleTransformError(container: self)
+            }
+            return result
         }
+    }
+    
+    public func decode<T: Decodable>() -> TryCodable<T>
+    {
+        return decode(map: id)
+    }
+    
+    public func decode<T: Decodable, U>(
+        map: KeyPath<T, U>)
+        -> TryCodable<U>
+    {
+        return decode(map: ^map)
+    }
+    
+    public func decode<T: Decodable, U>(
+        map: KeyPath<T, U?>)
+        -> TryCodable<U>
+    {
+        return decode(map: ^map)
     }
 }

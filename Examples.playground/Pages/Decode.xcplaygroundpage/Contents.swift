@@ -1,7 +1,7 @@
 //: [Previous](@previous)
 //: ### Basic Decoding Examples
 import Foundation
-import Codable
+import TryCodable
 
 struct Values {
     let a: String
