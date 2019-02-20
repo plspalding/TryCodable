@@ -82,7 +82,7 @@
 			isa = PBXGroup;
 			children = (
 				5A107E482203B180006D969A /* TryCodable */,
-				5A107E532203B180006D969A /* CodableTests */,
+				5A107E532203B180006D969A /* TryCodableTests */,
 				5A107E472203B180006D969A /* Products */,
 			);
 			sourceTree = "<group>";
@@ -109,7 +109,7 @@
 			path = TryCodable;
 			sourceTree = "<group>";
 		};
-		5A107E532203B180006D969A /* CodableTests */ = {
+		5A107E532203B180006D969A /* TryCodableTests */ = {
 			isa = PBXGroup;
 			children = (
 				5AFD4DA02218F7BB00EF754A /* Encode */,
@@ -117,7 +117,7 @@
 				5A785CD7220A5D0400D88D73 /* Models.swift */,
 				5A107E562203B180006D969A /* Info.plist */,
 			);
-			path = CodableTests;
+			path = TryCodableTests;
 			sourceTree = "<group>";
 		};
 		5AFD4D9D2218F75600EF754A /* Decode */ = {
