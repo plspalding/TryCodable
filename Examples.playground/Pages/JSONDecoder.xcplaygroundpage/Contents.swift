@@ -1,7 +1,7 @@
 //: [Previous](@previous)
 
 import Foundation
-import Codable
+import TryCodable
 
 let data =
     """

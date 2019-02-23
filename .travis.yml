@@ -1,0 +1,7 @@
+before_install:
+  - gem install bundler
+osx_image: xcode10.1
+language: swift
+xcode_workspace: TryCodable.xcworkspace
+xcode_scheme: TryCodable
+xcode_destination: platform=iOS Simulator,OS=12.1,name=iPhone 8

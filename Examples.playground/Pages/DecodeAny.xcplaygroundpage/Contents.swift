@@ -1,7 +1,7 @@
 //: [Previous](@previous)
 //: ### Decoding any elements in array
 import Foundation
-import Codable
+import TryCodable
 
 struct Values {
     let a: [String]
