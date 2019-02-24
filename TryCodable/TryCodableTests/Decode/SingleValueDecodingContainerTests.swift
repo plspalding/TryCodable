@@ -25,55 +25,74 @@
 
 import XCTest
 
+class SingleValueDecodingContainerTests: XCTestCase {
 
-// TODO: Put back
-//class SingleValueDecodingContainerTests: XCTestCase {
-//
-//    func test_can_decode_value() {
-//        struct A: Decodable {
-//            var name: String
-//
-//            init(from decoder: Decoder) throws {
-//                let container = try decoder.singleValueContainer()
-//                name = container.decode().valueElse("")
-//            }
-//        }
-//        let a = try! JSONDecoder().decode(A.self, from: singlevalueData)
-//        XCTAssert(a.name == "James")
-//    }
-//}
+    func test_can_decode_value() {
+        struct A: Decodable {
+            var b: B
 
-//extension SingleValueDecodingContainer {
-//
-//    func decode<T: Decodable, U>(
-//        map: (T) -> U?)
-//        -> Decode<U>
-//    {
-//        return Decode {
-//            guard let result = map(try decode(T.self)) else {
-//                throw singleTransformError(container: self)
-//            }
-//            return result
-//        }
-//    }
-//
-//    func decode<T: Decodable>() -> Decode<T>
-//    {
-//        return decode(map: id)
-//    }
-//
-//    func decode<T: Decodable, U>(
-//        map: KeyPath<T, U>)
-//        -> Decode<U>
-//    {
-//        return decode(map: ^map)
-//    }
-//
-//    func decode<T: Decodable, U>(
-//        map: KeyPath<T, U?>)
-//        -> Decode<U>
-//    {
-//        return decode(map: ^map)
-//    }
-//}
-//
+            init(from decoder: Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                b = try container.decode(.name).valueOrThrow()
+            }
+            
+            struct B: Decodable {
+                var name: String
+                
+                init(from decoder: Decoder) throws {
+                    let container = try decoder.singleValueContainer()
+                    name = container.decode().valueElse("")
+                }
+            }
+        }
+        
+        let a = try! JSONDecoder().decode(A.self, from: singlevalueData)
+        XCTAssert(a.b.name == "James")
+    }
+    
+    func test_can_decode_and_transform_value() {
+        struct A: Decodable {
+            var b: B
+            
+            init(from decoder: Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                b = try container.decode(.name).valueOrThrow()
+            }
+            
+            struct B: Decodable {
+                var name: String
+                
+                init(from decoder: Decoder) throws {
+                    let container = try decoder.singleValueContainer()
+                    name = container.decode(map: { (s: String) in s.uppercased() }).valueElse("")
+                }
+            }
+        }
+        
+        let a = try! JSONDecoder().decode(A.self, from: singlevalueData)
+        XCTAssert(a.b.name == "JAMES")
+    }
+    
+    func test_can_decode_and_transform_with_keyPath_value() {
+        struct A: Decodable {
+            var b: B
+            
+            init(from decoder: Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                b = try container.decode(.name).valueOrThrow()
+            }
+            
+            struct B: Decodable {
+                var count: Int
+                
+                init(from decoder: Decoder) throws {
+                    let container = try decoder.singleValueContainer()
+                    count = container.decode(map: \String.count).valueElse(0)
+                }
+            }
+        }
+        
+        let a = try! JSONDecoder().decode(A.self, from: singlevalueData)
+        XCTAssert(a.b.count == 5)
+    }
+}

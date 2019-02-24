@@ -9,6 +9,7 @@ struct Values {
     let c: Int?
     let d: Int
     let e: Int
+    let f: Int
 }
 
 let data =
@@ -19,6 +20,7 @@ let data =
     "c": 5,
     "d": "5",
     "e": "6",
+    "f": "Hello"
 }
 """.data(using: .utf8)!
 
@@ -32,6 +34,7 @@ extension Values: Decodable {
         c = container.decode(.c).valueOrNil()
         d = container.decode(.d).valueElse(10)
         e = container.decode(.e).valueElse(12, log: .active) // You will see print out in Debug area
+        f = try container.decode(.f, map: \String.count).valueOrThrow()
     }
     
     enum CodingKeys: CodingKey {
@@ -40,6 +43,7 @@ extension Values: Decodable {
         case c
         case d
         case e
+        case f
     }
 }
 
@@ -50,5 +54,6 @@ values.b
 values.c
 values.d
 values.e
+values.f
 
 //: [Next](@next)
