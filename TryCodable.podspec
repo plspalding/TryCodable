@@ -10,5 +10,5 @@ Pod::Spec.new do |s|
 
   s.ios.deployment_target = '10.1'
 
-  s.source_files = 'Source/*.swift'
+  s.source_files = 'TryCodable/TryCodable/**/*.swift'
 end
