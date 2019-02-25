@@ -1,13 +1,40 @@
+[![Build Status](https://travis-ci.com/plspalding/TryCodable.svg?branch=master)](https://travis-ci.com/plspalding/TryCodable)
+[![CocoaPods Compatible](https://img.shields.io/cocoapods/v/TryCodable.svg)](https://img.shields.io/cocoapods/v/TryCodable.svg)
+[![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+[![Platform](https://img.shields.io/cocoapods/p/TryCodable.svg?style=flat)](https://trycodable.github.io/TryCodable)
+
 # TryCodable
+
+**IMPORTANT**: TryCodable is at the beginning of its life (0.1.0). There is a high possiblity of major changes in regards to renames, structual changes, new functionality etc within the poject itself, the good news is that the api should remain pretty solid and thus any changes should hopefully not affect anyone too much. TryCodable was written with an API first approach. However with any new project unforseen circumstances may result in unforseen changes. Please bear with me :-).
 
 A small wrapper around Codable allowing users to have more flexibility when decoding and encoding values.
 
-### Getting Started
+## Requirements
+- iOS 10.0+
+- Xcode 10.1+
+- Swift 4.2+
 
-// TODO: Add varous ways to install `TryCodable`.
+## Getting Started
 
+### CocoaPods
+CocoaPods is a dependency manager for Cocoa projects. For usage and installation instructions, visit their website. To integrate TryCodable into your Xcode project using CocoaPods, specify it in your Podfile:
 
-### How to use
+`pod 'TryCodable', '~>0.1.0'`
+
+### Carthage
+Carthage is a decentralized dependency manager that builds your dependencies and provides you with binary frameworks. To integrate TryCodable into your Xcode project using Carthage, specify it in your Cartfile:
+
+`github "plspalding/TryCodable" "0.1.0"`
+
+### Manually using git submodules
+Add TryCodable as a submodule
+
+`$ git submodule add https://github.com/plspalding/TryCodable.git`
+
+Drag `TryCodable.xcodeproj` into Project Navigator
+Go to `Project > Targets > Build Phases > Link Binary With Libraries`, click `+` and select `TryCodable-[Platform]` target
+
+## How to use
 
 Let take a look at a basic implemention of Decoding a Struct using Codable.
 
