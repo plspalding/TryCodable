@@ -5,6 +5,6 @@
       location = "group:Examples.playground">
    </FileRef>
    <FileRef
-      location = "group:TryCodable/TryCodable.xcodeproj">
+      location = "group:TryCodable.xcodeproj">
    </FileRef>
 </Workspace>

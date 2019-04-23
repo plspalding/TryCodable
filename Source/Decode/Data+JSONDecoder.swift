@@ -28,7 +28,7 @@ import Foundation
 extension Data {
     
     public func decode<T: Decodable>(
-        as type: T.Type,
+        as type: T.Type = T.self,
         jsonDecoder: JSONDecoder = JSONDecoder())
         throws -> TryCodable<T>
     {
